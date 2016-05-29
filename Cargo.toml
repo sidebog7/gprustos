@@ -7,4 +7,5 @@ authors = ["Gareth Pendleton <gareth.sidebottom@gmail.com>","Philipp Oppermann <
 crate-type = ["staticlib"]
 
 [dependencies]
-rlibc = "0.1.4"
+rlibc = "1.0.0"
+spin = "0.4.2"
