@@ -1,0 +1,7 @@
+[package]
+name = "gprustos"
+version = "0.1.0"
+authors = ["Gareth Pendleton <gareth.sidebottom@gmail.com>","Philipp Oppermann <dev@phil-opp.com>"]
+
+[lib]
+crate-type = ["staticlib"]

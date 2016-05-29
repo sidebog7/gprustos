@@ -1,4 +1,6 @@
 arch ?= x86_64
+target ?= $(arch)-unknown-linux-gnu
+rust_os := target/$(target)/debug/libgprustos.a
 kernel := build/kernel-$(arch).bin
 iso := build/os-$(arch).iso
 
@@ -8,7 +10,7 @@ assembly_source_files := $(wildcard src/arch/$(arch)/*.asm)
 assembly_object_files := $(patsubst src/arch/$(arch)/%.asm, \
 	build/arch/$(arch)/%.o, $(assembly_source_files))
 
-.PHONY: all clean run iso
+.PHONY: all clean run iso cargo
 
 all: $(kernel)
 
@@ -27,8 +29,11 @@ $(iso): $(kernel) $(grub_cfg)
 	@grub-mkrescue -o $(iso) build/isofiles 2> /dev/null
 	@rm -r build/isofiles
 
-$(kernel): $(assembly_object_files) $(linker_script)
-	@ld -n -T $(linker_script) -o $(kernel) $(assembly_object_files)
+$(kernel): cargo $(rust_os) $(assembly_object_files) $(linker_script)
+	@ld -n -T $(linker_script) -o $(kernel) $(assembly_object_files) $(rust_os)
+
+cargo:
+	@cargo build --target $(target)
 
 # compile assembly files
 build/arch/$(arch)/%.o: src/arch/$(arch)/%.asm
