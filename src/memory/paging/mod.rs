@@ -11,7 +11,7 @@ use core::ops::{Deref, DerefMut};
 mod entry;
 
 mod table;
-mod page;
+pub mod page;
 
 mod mapper;
 mod inactivepagetable;
@@ -23,7 +23,7 @@ pub type PhysicalAddress = usize;
 pub type VirtualAddress = usize;
 
 
-pub fn remap_the_kernel<A>(allocator: &mut A, boot_info: &BootInformation)
+pub fn remap_the_kernel<A>(allocator: &mut A, boot_info: &BootInformation) -> ActivePageTable
     where A: FrameAllocator
 {
     let mut temporary_page = TemporaryPage::new(Page::new(0xcafebabe), allocator);
@@ -39,7 +39,6 @@ pub fn remap_the_kernel<A>(allocator: &mut A, boot_info: &BootInformation)
             .expect("Memory map tag required");
 
         for section in elf_sections_tag.sections() {
-            use self::entry::WRITABLE;
 
             if !section.is_allocated() {
                 // section is not loaded to memory
@@ -80,6 +79,8 @@ pub fn remap_the_kernel<A>(allocator: &mut A, boot_info: &BootInformation)
     let old_p4_page = Page::containing_address(old_table.p4_frame.start_address());
     active_table.unmap(old_p4_page, allocator);
     println!("guard page at {:#x}", old_p4_page.start_address());
+
+    active_table
 }
 
 pub struct ActivePageTable {

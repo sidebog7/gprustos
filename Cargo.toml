@@ -10,6 +10,7 @@ crate-type = ["staticlib"]
 rlibc = "1.0.0"
 spin = "0.4.2"
 bitflags = "0.7.0"
+once = "0.3.2"
 
 [dependencies.multiboot2]
 git = "https://github.com/phil-opp/multiboot2-elf64"
@@ -17,3 +18,12 @@ git = "https://github.com/phil-opp/multiboot2-elf64"
 [dependencies.x86]
 version = "0.7.0"
 default-features = false
+
+[dependencies.hole_list_allocator]
+path = "libs/hole_list_allocator"
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"

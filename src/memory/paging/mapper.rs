@@ -7,8 +7,6 @@ use memory::Frame;
 use memory::FrameAllocator;
 use super::{VirtualAddress, PhysicalAddress, ENTRY_COUNT};
 pub use super::entry::*;
-use super::inactivepagetable::InactivePageTable;
-
 
 pub struct Mapper {
     p4: Unique<Table<Level4>>,
