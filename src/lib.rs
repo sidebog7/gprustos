@@ -14,8 +14,6 @@ extern crate x86;
 mod vga_buffer;
 mod memory;
 
-use memory::FrameAllocator;
-
 #[no_mangle]
 pub extern "C" fn rust_main(multiboot_information_address: usize) {
     // ATTENTION: we have a very small stack and no guard page
