@@ -7,22 +7,23 @@ use memory::Frame;
 use memory::FrameAllocator;
 use super::{VirtualAddress, PhysicalAddress, ENTRY_COUNT};
 pub use super::entry::*;
+use super::inactivepagetable::InactivePageTable;
 
 
-pub struct ActivePageTable {
+pub struct Mapper {
     p4: Unique<Table<Level4>>,
 }
 
-impl ActivePageTable {
-    pub unsafe fn new() -> ActivePageTable {
-        ActivePageTable { p4: Unique::new(table::P4) }
+impl Mapper {
+    pub unsafe fn new() -> Mapper {
+        Mapper { p4: Unique::new(table::P4) }
     }
 
     fn p4(&self) -> &Table<Level4> {
         unsafe { self.p4.get() }
     }
 
-    fn p4_mut(&mut self) -> &mut Table<Level4> {
+    pub fn p4_mut(&mut self) -> &mut Table<Level4> {
         unsafe { self.p4.get_mut() }
     }
 
@@ -32,7 +33,7 @@ impl ActivePageTable {
             .map(|frame| frame.number * PAGE_SIZE + offset)
     }
 
-    fn translate_page(&self, page: Page) -> Option<Frame> {
+    pub fn translate_page(&self, page: Page) -> Option<Frame> {
         use super::entry::HUGE_PAGE;
 
         let p3 = self.p4().next_table(page.p4_index());
